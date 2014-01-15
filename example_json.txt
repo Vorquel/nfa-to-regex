@@ -1,0 +1,10 @@
+{
+ "states":["a","b","c"],
+ "alphabet":["1","2","3"],
+ "start":"a",
+ "accept":["b","c"],
+ "transitions":
+ {
+  "todo"
+ }
+}
