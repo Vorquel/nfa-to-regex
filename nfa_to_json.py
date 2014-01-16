@@ -11,9 +11,22 @@ def flatten(d,i,j):
  return ''
 
 def fix(string):
-  if '|' in string:
-    return '('+string+')'
+  para = 0;
+  for i in range(len(string)):
+    if string[i] == '(':
+      para += 1
+    elif string[i] == ')':
+      para -= 1
+    elif string[i] == '|' and para == 0:
+      return '('+string+')'
   return string
+
+def fix2(string):
+  if string == '' or string == '$':
+    return ''
+  if len(string) == 1:
+    return string+'*'
+  return '('+string+')*'
 
 data = []
 with open(raw_input('Enter file name: ')) as f:
@@ -22,8 +35,6 @@ with open(raw_input('Enter file name: ')) as f:
 states = data['states']
 states.append(0)
 states.append(-1)
-
-alphabet = data['alphabet']
 
 transitions = {}
 for first in states:
@@ -39,21 +50,20 @@ for end in data['accept']:
 for i in range(len(states)-2):
   state = states[i]
   for first in states[i+1:]:
-    if not transitions[first][state]:
+    if transitions[first][state] == '':
       continue
     for second in states[i+1:]:
-      if not transitions[state][second]:
+      if transitions[state][second] == '':
         continue
       old = fix(transitions[first][second])
       beg = fix(transitions[first][state])
-      mid = '('+transitions[state][state]+')*'
+      mid = fix2(transitions[state][state])
       end = fix(transitions[state][second])
       temp = ''
       if old != '':
         temp = old+'|'
       temp += beg
-      if mid != '()*' and mid != '($)*':
-        temp += mid
+      temp += mid
       temp += end
       transitions[first][second] = temp
 
